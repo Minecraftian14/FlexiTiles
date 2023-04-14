@@ -23,7 +23,7 @@ uniform vec2 u_resolution;
 uniform float u_screenToWorld;
 uniform vec2 u_camera;
 
-uniform sampler2D iChannel0;
+//uniform sampler2D iChannel0;
 
 varying vec2 v_texCoords;
 
@@ -221,12 +221,12 @@ void main()
     // Convert the point p in space P to space E
     vec2 e = vec2(f, d / u_heightOfTile * scale);
     // Convert the point e in space E to space T
-//        vec2 t = warpESpaceToTSpace(e, u_splitStart, u_splitEnd, u_repeats);
-        vec2 t = warpESpaceToTSpace(e, u_splitStart, u_splitEnd, ceil((length(a - b) + length(b - c)) / (u_heightOfTile / scale)));
+    //        vec2 t = warpESpaceToTSpace(e, u_splitStart, u_splitEnd, u_repeats);
+    vec2 t = warpESpaceToTSpace(e, u_splitStart, u_splitEnd, ceil((length(a - b) + length(b - c)) / (u_heightOfTile / scale)));
 
-        t.y = 1.0 - t.y;
-        gl_FragColor = texture2D(u_texture, t);
-//    gl_FragColor = warpESpaceToTSpace2(e, u_splitStart, u_splitEnd, ceil((length(a - b) + length(b - c)) / (u_heightOfTile / scale)));
+    t.y = 1.0 - t.y;
+    gl_FragColor = texture2D(u_texture, t);
+    //    gl_FragColor = warpESpaceToTSpace2(e, u_splitStart, u_splitEnd, ceil((length(a - b) + length(b - c)) / (u_heightOfTile / scale)));
     if (f < 0.0 || f > 1.0 || d < 0.0 || d > u_heightOfTile / scale || p.y < z.y) gl_FragColor = vec4(0.0);
 
     //    if (length(p - vec2(0.0, 0.0)) < 0.1) gl_FragColor = vec4(1.0);
