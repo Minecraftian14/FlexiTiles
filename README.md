@@ -3,9 +3,13 @@
 Use shaders to stretch-n-repeat tile images to fill a spline.
 
 That is, convert
-![image](https://user-images.githubusercontent.com/52451860/232027188-fe86458a-5b1e-4856-9166-ef7c9d3f0f86.png)
+
+<img width="500" src="https://user-images.githubusercontent.com/52451860/232027188-fe86458a-5b1e-4856-9166-ef7c9d3f0f86.png"></img>
+
 to
-![sdsds](https://user-images.githubusercontent.com/52451860/232027420-619ef81f-7f7f-41fd-a31d-1c2cbb711904.gif)
+
+<img width="500" src="https://user-images.githubusercontent.com/52451860/232027420-619ef81f-7f7f-41fd-a31d-1c2cbb711904.gif"></img>
+
 
 Check out [Flexi Tiles Demo](https://github.com/Minecraftian14/FlexiTilesDemo) for code examples.
 
