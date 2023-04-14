@@ -1,33 +1,74 @@
 # FlexiTiles
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/tommyettinger/gdx-liftoff).
+Use shaders to stretch-n-repeat tile images to fill a spline.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+That is, convert
+![image](https://user-images.githubusercontent.com/52451860/232027188-fe86458a-5b1e-4856-9166-ef7c9d3f0f86.png)
+to
+![sdsds](https://user-images.githubusercontent.com/52451860/232027420-619ef81f-7f7f-41fd-a31d-1c2cbb711904.gif)
 
-## Platforms
+Check out [Flexi Tiles Demo](https://github.com/Minecraftian14/FlexiTilesDemo) for code examples.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3.
+### How to use?
 
-## Gradle
+First of all, create an instance of LinearFlexiTile. This class contains the driver code to make drawing simple. 
+If this does not work in your specific environment (project setup) then please file an issue.
+```java
+/**
+ * tile - The source texture region which is extended and reshaped.
+ * start and end - the fraction of tile which will be repeated. Raneg must be within 0 to 1 only.
+ * height - The height of the tile you wish to maintain (in world units).
+ */
+var flexiTile = new LinearFlexiTile(tile, start, end, height);
+```
 
-This project uses [Gradle](http://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+Then make an `Array` of points and add all the spline points.
+The first point is the starter point, the fourth point is the bezier ender. The two points in between are the control points. Further, the fourth point also acts as the starter point for the next bezier.
+```java
+points.addAll(
+    new Vector2(-3, -1),
+    new Vector2(-3, 0),
+    new Vector2(-1, -1),
+    new Vector2(0, -.1f),
+    new Vector2(1, 1),
+    new Vector2(2, -1),
+    new Vector2(3, 1)
+);
+```
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+To update the `flexiTile`, call the following methods
+```java
+// Set the points in flexiTile 
+flexiTile.updateGuidePoints(points.toArray(Vector2.class));
+// Reset first control point of beziers to make spline continuous
+flexiTile.makePathContinuous();
+```
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+And finally draw the tile ✨
+```java
+// batch.setProjectionMatrix(camera.combined);
+// batch.begin();
+
+floorTile.draw(viewport, batch);
+
+// batch.draw(...);
+// batch.end();
+```
+
+Moreover, you can add Physics!!
+```java
+// Create a list of points representing shapes which describe the spline. Optionally pass a resolution number if you want smoother shapes.  
+var shapes = floorTile.createShape();
+
+// Add these shapes to any physics engine of you choice. For example, in kbox 2d you can write as
+BodyDef def = new BodyDef();
+def.position.set(0, 0);
+Body body = world.createBody(def);
+Array<FloatArray> shapes = floorTile.createShape(100);
+for (int j = 0; j < shapes.size; j++) {
+    PolygonShape s = new PolygonShape();
+    s.set(shapes.get(j).toArray());
+    body.createFixture(s, 0.0f);
+    s.dispose();
+}
+```
